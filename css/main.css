@@ -616,6 +616,24 @@ body {
   color: var(--text-muted);
 }
 
+/* Outcomes section */
+.validation__outcomes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  max-width: 680px;
+  margin: 0 auto;
+  margin-top: var(--space-2xl);
+}
+
+.outcome-statement {
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 0 var(--space-md);
+}
+
 /* Legacy grid styles */
 .validation__grid {
   display: grid;
