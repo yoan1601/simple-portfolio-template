@@ -1,59 +1,124 @@
 "use strict";
 import form from "./form.js";
-import skillbar from "./skillbar.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  AOS.init({
-    once: true,
-  });
+  // Initialize form handler
   form();
-  skillbar();
 
-  const nav = document.querySelector("#nav");
-  const navBtn = document.querySelector("#nav-btn");
-  const navBtnImg = document.querySelector("#nav-btn-img");
+  // ═══════════════════════════════════════════════════════════
+  // MOBILE NAVIGATION
+  // ═══════════════════════════════════════════════════════════
+  const navToggle = document.querySelector("#nav-toggle");
+  const navMobile = document.querySelector("#nav-mobile");
+  const navMobileLinks = document.querySelectorAll(".nav-mobile__link");
 
-  //Hamburger menu
-  navBtn.onclick = () => {
-    if (nav.classList.toggle("open")) {
-      navBtnImg.src = "img/icons/close.svg";
+  if (navToggle && navMobile) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = navMobile.classList.toggle("is-open");
+      navToggle.setAttribute("aria-expanded", isOpen);
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
+
+    // Close mobile nav when clicking a link
+    navMobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navMobile.classList.remove("is-open");
+        navToggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+      });
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // HEADER SCROLL BEHAVIOR
+  // ═══════════════════════════════════════════════════════════
+  const header = document.querySelector("#header");
+  let lastScroll = 0;
+
+  window.addEventListener("scroll", () => {
+    const currentScroll = window.scrollY;
+
+    // Add scrolled class after 100px
+    if (currentScroll > 100) {
+      header.classList.add("header--scrolled");
     } else {
-      navBtnImg.src = "img/icons/open.svg";
+      header.classList.remove("header--scrolled");
     }
+
+    lastScroll = currentScroll;
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // ANIMATE ON SCROLL
+  // ═══════════════════════════════════════════════════════════
+  const animateElements = document.querySelectorAll("[data-animate]");
+
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px 0px -50px 0px",
+    threshold: 0.1,
   };
 
-  window.addEventListener("scroll", function () {
-    const header = document.querySelector("#header");
-    const hero = document.querySelector("#home");
-    let triggerHeight = hero.offsetHeight - 170;
+  const animateObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        animateObserver.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
 
-    if (window.scrollY > triggerHeight) {
-      header.classList.add("header-sticky");
-      goToTop.classList.add("reveal");
-    } else {
-      header.classList.remove("header-sticky");
-      goToTop.classList.remove("reveal");
-    }
+  animateElements.forEach((el) => {
+    animateObserver.observe(el);
   });
 
-  let sections = document.querySelectorAll("section");
-  let navLinks = document.querySelectorAll("header nav a");
+  // ═══════════════════════════════════════════════════════════
+  // SMOOTH SCROLL FOR ANCHOR LINKS
+  // ═══════════════════════════════════════════════════════════
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      const href = this.getAttribute("href");
+      if (href === "#" || href === "#!") return;
 
-  window.onscroll = () => {
-    sections.forEach((sec) => {
-      let top = window.scrollY;
-      let offset = sec.offsetTop - 170;
-      let height = sec.offsetHeight;
-      let id = sec.getAttribute("id");
+      e.preventDefault();
+      const target = document.querySelector(href);
 
-      if (top >= offset && top < offset + height) {
-        navLinks.forEach((links) => {
-          links.classList.remove("active");
-          document
-            .querySelector("header nav a[href*=" + id + "]")
-            .classList.add("active");
+      if (target) {
+        const headerHeight = header.offsetHeight;
+        const targetPosition = target.offsetTop - headerHeight;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: "smooth",
+        });
+      }
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // ACTIVE NAV LINK ON SCROLL
+  // ═══════════════════════════════════════════════════════════
+  const sections = document.querySelectorAll("section[id]");
+  const navLinks = document.querySelectorAll(".header__link");
+
+  const highlightNav = () => {
+    const scrollY = window.scrollY;
+
+    sections.forEach((section) => {
+      const sectionHeight = section.offsetHeight;
+      const sectionTop = section.offsetTop - 150;
+      const sectionId = section.getAttribute("id");
+
+      if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+        navLinks.forEach((link) => {
+          link.classList.remove("header__link--active");
+          if (link.getAttribute("href") === `#${sectionId}`) {
+            link.classList.add("header__link--active");
+          }
         });
       }
     });
   };
+
+  window.addEventListener("scroll", highlightNav);
 });
