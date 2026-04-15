@@ -49,6 +49,11 @@ const form = () => {
         const result = await response.json();
         
         if (result.success) {
+          // Track successful form submission
+          if (window.umami) {
+            umami.track('form_submit');
+          }
+          
           responseMessage.classList.add("response--success");
           responseMessage.textContent = "Message sent. I'll get back to you shortly.";
           formElement.reset();
