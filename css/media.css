@@ -39,10 +39,10 @@
 .nav-mobile__link {
   font-family: var(--font-display);
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-primary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .nav-mobile__link:hover {

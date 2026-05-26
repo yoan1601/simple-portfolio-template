@@ -35,6 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const header = document.querySelector("#header");
   let lastScroll = 0;
 
+  // ═══════════════════════════════════════════════════════════
+  // SCROLL PROGRESS INDICATOR
+  // ═══════════════════════════════════════════════════════════
+  const updateScrollProgress = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    document.body.style.setProperty('--scroll-progress', progress);
+  };
+
   window.addEventListener("scroll", () => {
     const currentScroll = window.scrollY;
 
@@ -45,8 +55,52 @@ document.addEventListener("DOMContentLoaded", () => {
       header.classList.remove("header--scrolled");
     }
 
+    // Update scroll progress
+    updateScrollProgress();
+
     lastScroll = currentScroll;
   });
+
+  // Initialize scroll progress
+  updateScrollProgress();
+
+  // ═══════════════════════════════════════════════════════════
+  // HERO WORD REVEAL ANIMATION
+  // ═══════════════════════════════════════════════════════════
+  const heroHeadlines = document.querySelectorAll('.anchor__headline, .anchor__headline-secondary');
+  
+  heroHeadlines.forEach(headline => {
+    const text = headline.textContent.trim();
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    headline.innerHTML = '';
+    headline.removeAttribute('data-animate'); // Remove default animation
+    
+    words.forEach((word, index) => {
+      const span = document.createElement('span');
+      span.className = 'word-reveal';
+      span.textContent = word;
+      span.style.transitionDelay = `${index * 0.08}s`;
+      headline.appendChild(span);
+      
+      // Add space between words (except after last word)
+      if (index < words.length - 1) {
+        headline.appendChild(document.createTextNode(' '));
+      }
+    });
+  });
+
+  // Observe hero headlines for word reveal
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const words = entry.target.querySelectorAll('.word-reveal');
+        words.forEach(word => word.classList.add('is-visible'));
+        heroObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  heroHeadlines.forEach(headline => heroObserver.observe(headline));
 
   // ═══════════════════════════════════════════════════════════
   // ANIMATE ON SCROLL
