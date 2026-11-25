@@ -1,0 +1,35 @@
+---
+// Drapeaux en SVG (décision du 24/11) : tricolore pour le français, britannique pour l'anglais. Décoratifs.
+import type { Locale } from "../i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+{
+  locale === "fr" ? (
+    <svg class="flag" width="21" height="14" viewBox="0 0 3 2" aria-hidden="true">
+      <rect width="1" height="2" fill="#0055A4" />
+      <rect x="1" width="1" height="2" fill="#FFFFFF" />
+      <rect x="2" width="1" height="2" fill="#EF4135" />
+    </svg>
+  ) : (
+    <svg class="flag" width="21" height="14" viewBox="7.5 0 45 30" aria-hidden="true">
+      <rect width="60" height="30" fill="#012169" />
+      <path d="M0 0L60 30M60 0L0 30" stroke="#FFFFFF" stroke-width="6" />
+      <path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" stroke-width="2" />
+      <path d="M30 0V30M0 15H60" stroke="#FFFFFF" stroke-width="10" />
+      <path d="M30 0V30M0 15H60" stroke="#C8102E" stroke-width="6" />
+    </svg>
+  )
+}
+
+<style>
+  .flag {
+    flex: 0 0 21px;
+    box-shadow: 0 0 0 1px rgb(240 235 227 / 0.2);
+  }
+</style>

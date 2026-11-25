@@ -1,0 +1,28 @@
+---
+// Mise en page unique, commune aux deux langues : en-tête, contenu principal, pied de page.
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { getContent, type Locale } from "../i18n";
+import Base from "./Base.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+---
+
+<Base locale={locale}>
+  <Header locale={locale} />
+  <main id={t.ui.anchors.top} tabindex="-1">
+    <slot />
+  </main>
+  <Footer locale={locale} />
+</Base>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+</style>

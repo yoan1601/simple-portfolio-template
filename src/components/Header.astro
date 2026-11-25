@@ -1,0 +1,205 @@
+---
+// En-tête fixe. À partir de 1100 px : nom, navigation, langue (drapeau + code), bouton Calendly.
+// En dessous : nom, drapeaux seuls, bouton du menu (affiché seulement si le JavaScript tourne).
+import { getContent, type Locale } from "../i18n";
+import CalendlyLink from "./CalendlyLink.astro";
+import LangSwitch from "./LangSwitch.astro";
+import MobileMenu from "./MobileMenu.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const { anchors, nav } = t.ui;
+const navItems = [
+  { href: `#${anchors.offer}`, label: nav.offer },
+  { href: `#${anchors.method}`, label: nav.method },
+  { href: `#${anchors.proof}`, label: nav.proof },
+  { href: `#${anchors.faq}`, label: nav.faq },
+];
+---
+
+<header class="site-header">
+  <div class="site-header__progress" aria-hidden="true"></div>
+  <div class="site-header__inner">
+    <a class="site-header__name" href={`#${anchors.top}`}>{t.ui.siteName}</a>
+
+    <div class="site-header__right">
+      <nav class="site-header__nav" aria-label={nav.label}>
+        {navItems.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <div class="site-header__lang">
+        <LangSwitch locale={locale} position="header" compact />
+      </div>
+      <CalendlyLink class="site-header__cta" position="header" size="sm" arrow={false}>
+        {t.ui.bookCall}
+      </CalendlyLink>
+      <button
+        class="site-header__burger"
+        type="button"
+        aria-label={t.ui.menu.open}
+        aria-haspopup="dialog"
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        data-menu-open
+        hidden
+      >
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h10" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<MobileMenu locale={locale} />
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgb(10 10 8 / 0.92);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  @supports (backdrop-filter: blur(12px)) {
+    .site-header {
+      backdrop-filter: blur(12px);
+    }
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    max-width: var(--max-width);
+    min-height: var(--header-height);
+    margin: 0 auto;
+    padding: 0 12px 0 20px;
+  }
+
+  .site-header__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-strong);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-header__right {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  /* Le bouton est rendu par CalendlyLink : sélecteur :global sous le parent */
+  .site-header__nav,
+  .site-header__right :global(.site-header__cta) {
+    display: none;
+  }
+
+  .site-header__burger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--ink-strong);
+    cursor: pointer;
+  }
+
+  @media (min-width: 1100px) {
+    .site-header__inner {
+      gap: 16px 32px;
+      padding: 0 var(--gutter);
+    }
+
+    .site-header__name {
+      font-size: 19px;
+    }
+
+    .site-header__right {
+      gap: 32px;
+    }
+
+    .site-header__nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      font-size: 13px;
+      letter-spacing: 0.03em;
+    }
+
+    .site-header__nav a {
+      color: var(--ink-secondary);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .site-header__nav a:hover {
+      color: var(--accent-hover);
+    }
+
+    .site-header__lang {
+      padding-left: 24px;
+      border-left: 1px solid var(--line);
+    }
+
+    .site-header__right :global(.site-header__cta) {
+      display: inline-flex;
+    }
+
+    .site-header__burger {
+      display: none;
+    }
+  }
+
+  /* Barre de progression de lecture : CSS seul, ignorée par les navigateurs qui ne la gèrent pas */
+  .site-header__progress {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .site-header__progress {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, #8b5e2a, var(--accent));
+      transform-origin: 0 50%;
+      transform: scaleX(0); /* vide tant que la page ne défile pas */
+      animation: reading-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+
+  @keyframes reading-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+</style>

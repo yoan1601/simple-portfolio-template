@@ -1,0 +1,198 @@
+---
+// Menu mobile plein écran, dans un <dialog> modal : Échap le ferme, le focus reste dedans
+// et revient sur le bouton du menu à la fermeture. Liens numérotés comme les sections.
+import { getContent, type Locale } from "../i18n";
+import { sectionNumber } from "../lib/sections";
+import CalendlyLink from "./CalendlyLink.astro";
+import LangSwitch from "./LangSwitch.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const { anchors, nav } = t.ui;
+const items = [
+  { href: `#${anchors.offer}`, label: nav.offer, number: sectionNumber("offer") },
+  { href: `#${anchors.method}`, label: nav.method, number: sectionNumber("method") },
+  { href: `#${anchors.proof}`, label: nav.proof, number: sectionNumber("proof") },
+  { href: `#${anchors.faq}`, label: nav.faq, number: sectionNumber("faq") },
+  { href: `#${anchors.contact}`, label: nav.contact, number: sectionNumber("contact") },
+];
+---
+
+<dialog id="mobile-menu" class="mobile-menu" aria-label={nav.label}>
+  <div class="mobile-menu__bar">
+    <span class="mobile-menu__name">{t.ui.siteName}</span>
+    <button class="mobile-menu__close" type="button" aria-label={t.ui.menu.close} data-menu-close>
+      <svg
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <path d="M6 6l12 12" />
+        <path d="M18 6L6 18" />
+      </svg>
+    </button>
+  </div>
+
+  <nav class="mobile-menu__nav" aria-label={nav.label}>
+    <ol>
+      {
+        items.map((item) => (
+          <li>
+            <a href={item.href} data-menu-link>
+              <span class="mobile-menu__number">{item.number}</span>
+              <span class="mobile-menu__label">{item.label}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="mobile-menu__lang-title" aria-hidden="true">{t.ui.lang.groupLabel}</p>
+    <LangSwitch locale={locale} position="menu" variant="menu" />
+  </nav>
+
+  <div class="mobile-menu__foot">
+    <CalendlyLink position="menu" size="block">{t.ui.bookCall}</CalendlyLink>
+    <p class="mobile-menu__signature">{t.ui.signature}</p>
+  </div>
+</dialog>
+
+<script>
+  import { initMobileMenu } from "../scripts/menu";
+  initMobileMenu();
+</script>
+
+<style>
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--bg);
+    color: var(--ink-strong);
+    overflow-y: auto;
+  }
+
+  .mobile-menu[open] {
+    display: flex;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.3s var(--ease);
+  }
+
+  @starting-style {
+    .mobile-menu[open] {
+      opacity: 0;
+    }
+  }
+
+  .mobile-menu::backdrop {
+    background: var(--bg);
+  }
+
+  .mobile-menu__bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 12px 0 20px;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .mobile-menu__name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  .mobile-menu__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    color: var(--ink-strong);
+    cursor: pointer;
+  }
+
+  .mobile-menu__nav {
+    flex: 1 1 auto;
+    padding: 36px var(--gutter) 32px;
+  }
+
+  .mobile-menu__nav ol {
+    list-style: none;
+    padding: 0;
+  }
+
+  .mobile-menu__nav li {
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .mobile-menu__nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 14px 0;
+    color: var(--ink-strong);
+    text-decoration: none;
+  }
+
+  .mobile-menu__nav a:hover .mobile-menu__label {
+    color: var(--accent-hover);
+  }
+
+  .mobile-menu__number {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .mobile-menu__label {
+    font-family: var(--font-display);
+    font-size: 30px;
+    line-height: 1.2;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-menu__lang-title {
+    margin: 40px 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .mobile-menu__foot {
+    flex: 0 0 auto;
+    padding: 20px 16px 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .mobile-menu__signature {
+    margin-top: 14px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    color: var(--accent);
+  }
+</style>

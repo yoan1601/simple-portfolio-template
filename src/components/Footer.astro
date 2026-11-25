@@ -1,0 +1,108 @@
+---
+// Pied de page. Ordinateur : copyright, signature, liens sur une ligne. Mobile : centré, signature d'abord.
+import { getContent, links, type Locale } from "../i18n";
+import LangSwitch from "./LangSwitch.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <p class="site-footer__copy">{t.footer.copyright}</p>
+    <p class="site-footer__signature">{t.ui.signature}</p>
+    <div class="site-footer__links">
+      <a
+        class="site-footer__linkedin"
+        href={links.linkedin}
+        target="_blank"
+        rel="noopener"
+        data-umami-event="linkedin_click"
+        data-umami-event-position="footer">{t.footer.linkedin}</a
+      >
+      <LangSwitch locale={locale} position="footer" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--bg-band);
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 36px var(--gutter) 40px;
+    text-align: center;
+  }
+
+  .site-footer__signature {
+    order: 1;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  .site-footer__links {
+    order: 2;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-size: 13px;
+  }
+
+  .site-footer__copy {
+    order: 3;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: var(--ink-note);
+  }
+
+  .site-footer__linkedin {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--ink-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .site-footer__linkedin:hover {
+    color: var(--accent-hover);
+  }
+
+  @media (min-width: 768px) {
+    .site-footer__inner {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 20px 40px;
+      padding: 40px var(--gutter);
+      text-align: left;
+    }
+
+    .site-footer__copy {
+      order: 0;
+      font-size: 13px;
+    }
+
+    .site-footer__signature {
+      font-size: 19px;
+    }
+
+    .site-footer__links {
+      gap: 28px;
+    }
+  }
+</style>

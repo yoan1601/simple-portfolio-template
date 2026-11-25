@@ -1,0 +1,165 @@
+---
+// Sélecteur de langue. « inline » : drapeau + code (en-tête, pied de page) ; avec « compact », le code est caché
+// sous 1100 px et seul le drapeau reste, le nom de la langue restant lisible par les lecteurs d'écran.
+// « menu » : deux cases drapeau + nom, dans le menu mobile. Chaque bascule envoie l'événement Umami lang_switch.
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getContent, locales, type Locale } from "../i18n";
+import Flag from "./Flag.astro";
+
+interface Props {
+  locale: Locale;
+  position: "header" | "footer" | "menu";
+  variant?: "inline" | "menu";
+  compact?: boolean;
+}
+
+const { locale, position, variant = "inline", compact = false } = Astro.props;
+const t = getContent(locale);
+const items = locales.map((l) => ({
+  locale: l,
+  lang: getContent(l).ui.lang,
+  current: l === locale,
+  href: getRelativeLocaleUrl(l),
+}));
+---
+
+<div
+  role="group"
+  aria-label={t.ui.lang.groupLabel}
+  class:list={["lang", `lang--${variant}`, { "lang--compact": compact, "lang--underline": position === "header" }]}
+>
+  {
+    items.map((item) =>
+      item.current ? (
+        <span class="lang__item lang__item--current" aria-current="page">
+          <Flag locale={item.locale} />
+          {variant === "menu" ? (
+            <span>{item.lang.name}</span>
+          ) : (
+            <>
+              <span class="lang__code" aria-hidden="true">
+                {item.lang.code}
+              </span>
+              <span class="sr-only">{item.lang.name}</span>
+            </>
+          )}
+        </span>
+      ) : (
+        <a
+          class="lang__item"
+          href={item.href}
+          hreflang={item.locale}
+          lang={item.locale}
+          aria-label={variant === "menu" ? undefined : item.lang.versionLabel}
+          data-umami-event="lang_switch"
+          data-umami-event-from={locale}
+          data-umami-event-to={item.locale}
+          data-umami-event-position={position}
+        >
+          <Flag locale={item.locale} />
+          {variant === "menu" ? <span>{item.lang.name}</span> : <span class="lang__code">{item.lang.code}</span>}
+        </a>
+      ),
+    )
+  }
+</div>
+
+<style>
+  .lang {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    line-height: 1;
+  }
+
+  .lang__item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 6px;
+    color: var(--ink-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a.lang__item {
+    opacity: 0.75;
+  }
+
+  a.lang__item:hover {
+    color: var(--accent-hover);
+    opacity: 1;
+  }
+
+  .lang__item--current {
+    color: var(--accent);
+  }
+
+  /* En-tête seulement : langue en cours soulignée (le pied de page la marque par la couleur) */
+  .lang--underline .lang__item {
+    border-bottom: 1px solid transparent;
+  }
+
+  .lang--underline .lang__item--current {
+    border-bottom-color: var(--accent);
+  }
+
+  @media (max-width: 1099.98px) {
+    .lang--compact .lang__code {
+      display: none;
+    }
+
+    /* Zone tactile de 44 × 44 px, trait de la langue en cours 5 px sous le drapeau */
+    .lang--compact .lang__item {
+      position: relative;
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .lang--compact .lang__item--current::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      width: 21px;
+      height: 1px;
+      margin-left: -10.5px;
+      background: var(--accent);
+    }
+
+    .lang--compact a.lang__item {
+      opacity: 0.6;
+    }
+  }
+
+  /* Menu mobile : deux cases */
+  .lang--menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border: 1px solid rgb(200 133 58 / 0.35);
+    border-radius: var(--radius);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+  }
+
+  .lang--menu .lang__item {
+    min-height: 48px;
+    gap: 10px;
+    opacity: 1;
+  }
+
+  .lang--menu .lang__item + .lang__item {
+    border-left: 1px solid rgb(200 133 58 / 0.35);
+  }
+
+  .lang--menu .lang__item--current {
+    background: rgb(200 133 58 / 0.14);
+    font-weight: 500;
+  }
+</style>

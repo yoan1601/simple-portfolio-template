@@ -1,0 +1,41 @@
+---
+// Bouton plein vers Calendly (seul bouton plein de la page). Les UTM et l'événement calendly_click arrivent à l'étape 7.
+import { links } from "../i18n";
+
+interface Props {
+  position: "header" | "menu" | "hero" | "offer" | "contact" | "sticky";
+  size?: "sm" | "lg" | "block";
+  arrow?: boolean;
+  class?: string;
+}
+
+const { position, size = "lg", arrow = true, class: className } = Astro.props;
+---
+
+<a
+  class:list={["btn", "btn--primary", `btn--${size}`, className]}
+  href={links.calendly}
+  target="_blank"
+  rel="noopener"
+  data-cta={position}
+>
+  <slot />
+  {
+    arrow && (
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M7 17L17 7" />
+        <path d="M8 7h9v9" />
+      </svg>
+    )
+  }
+</a>
