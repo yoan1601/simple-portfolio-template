@@ -229,6 +229,23 @@ a:hover {
   transform: translateY(-1px);
 }
 
+/* Contour : bouton « Envoyer » du formulaire (proposition 2 : Calendly reste le seul bouton plein) */
+.btn--ghost {
+  min-height: 52px;
+  padding: 0 32px;
+  font-size: 14px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--ink-strong);
+  cursor: pointer;
+}
+
+.btn--ghost:hover {
+  background: var(--accent-veil);
+  border-color: var(--accent-hover);
+  color: var(--ink-strong);
+}
+
 .btn--sm {
   gap: 8px;
   min-height: 44px;

@@ -1,0 +1,133 @@
+---
+// 11. Appel final : Calendly d'abord (bouton plein), le formulaire en second (« Vous préférez écrire ? »).
+import { getContent, type Locale } from "../../i18n";
+import CalendlyLink from "../CalendlyLink.astro";
+import ContactForm from "../ContactForm.astro";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const c = t.contact;
+---
+
+<Section
+  section="contact"
+  id={t.ui.anchors.contact}
+  margin={c.margin}
+  labelledby="t-contact"
+  large
+  class="contact"
+>
+  <div class="contact__layout">
+    <div class="contact__call">
+      <h2 id="t-contact" class="contact__title">{c.title}</h2>
+      <p class="contact__text read read--lg">{c.text}</p>
+      <CalendlyLink class="contact__cta" locale={locale} position="contact">{t.ui.bookCall}</CalendlyLink>
+      <p class="contact__opens">{t.ui.opensInCalendly}</p>
+    </div>
+    <div class="contact__write">
+      <h3 class="contact__write-title">{c.form.title}</h3>
+      <ContactForm locale={locale} />
+    </div>
+  </div>
+</Section>
+
+<style>
+  /* La balise <section> est rendue par Section.astro : sélecteur global */
+  :global(.section.contact) {
+    background: radial-gradient(ellipse 90% 40% at 30% 100%, rgb(200 133 58 / 0.06) 0%, transparent 60%);
+  }
+
+  .contact__title {
+    margin-bottom: 18px;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  .contact__text {
+    margin-bottom: 28px;
+  }
+
+  .contact__call :global(.contact__cta) {
+    display: flex;
+    width: 100%;
+    min-height: 58px;
+  }
+
+  .contact__opens {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink-note);
+  }
+
+  .contact__write {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+
+  .contact__write-title {
+    margin-bottom: 14px;
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  @media (min-width: 768px) {
+    .contact__call :global(.contact__cta) {
+      display: inline-flex;
+      width: auto;
+      min-height: 60px;
+      padding: 0 34px;
+    }
+
+    .contact__opens {
+      margin-top: 16px;
+      text-align: left;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .contact__layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 64px 72px;
+    }
+
+    .contact__call {
+      flex: 1 1 340px;
+      min-width: 0;
+    }
+
+    .contact__write {
+      flex: 1 1 360px;
+      min-width: 0;
+      margin: 0;
+      padding-top: 8px;
+      border: 0;
+    }
+
+    .contact__title {
+      max-width: 12ch; /* « Racontez-moi » sur une ligne */
+      margin-bottom: 24px;
+      font-size: 58px;
+      letter-spacing: -0.015em;
+    }
+
+    .contact__text {
+      max-width: 440px;
+      margin-bottom: 40px;
+    }
+
+    .contact__write-title {
+      margin-bottom: 8px;
+      font-size: 26px;
+    }
+  }
+</style>

@@ -33,7 +33,7 @@ const navItems = [
       <div class="site-header__lang">
         <LangSwitch locale={locale} position="header" compact />
       </div>
-      <CalendlyLink class="site-header__cta" position="header" size="sm" arrow={false}>
+      <CalendlyLink class="site-header__cta" locale={locale} position="header" size="sm" arrow={false}>
         {t.ui.bookCall}
       </CalendlyLink>
       <button

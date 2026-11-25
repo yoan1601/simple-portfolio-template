@@ -1,23 +1,36 @@
 ---
-// Bouton plein vers Calendly (seul bouton plein de la page). Les UTM et l'événement calendly_click arrivent à l'étape 7.
-import { links } from "../i18n";
+// Bouton plein vers Calendly (seul bouton plein de la page), événement premier-echange.
+// UTM : source = le site, campagne = la langue de la page, contenu = la position du bouton,
+// pour savoir dans Calendly d'où vient chaque réservation. Clic suivi par Umami (calendly_click).
+import { links, type Locale } from "../i18n";
+
+export type CalendlyPosition = "header" | "menu" | "hero" | "offer" | "contact" | "sticky";
 
 interface Props {
-  position: "header" | "menu" | "hero" | "offer" | "contact" | "sticky";
+  locale: Locale;
+  position: CalendlyPosition;
   size?: "sm" | "lg" | "block";
   arrow?: boolean;
   class?: string;
 }
 
-const { position, size = "lg", arrow = true, class: className } = Astro.props;
+const { locale, position, size = "lg", arrow = true, class: className } = Astro.props;
+
+const url = new URL(links.calendly);
+url.searchParams.set("utm_source", "harena.systems");
+url.searchParams.set("utm_medium", "site");
+url.searchParams.set("utm_campaign", `landing-${locale}`);
+url.searchParams.set("utm_content", position);
 ---
 
 <a
   class:list={["btn", "btn--primary", `btn--${size}`, className]}
-  href={links.calendly}
+  href={url.href}
   target="_blank"
   rel="noopener"
-  data-cta={position}
+  data-umami-event="calendly_click"
+  data-umami-event-position={position}
+  data-umami-event-locale={locale}
 >
   <slot />
   {

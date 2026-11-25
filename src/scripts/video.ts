@@ -1,12 +1,6 @@
 // Lecture au clic : remplace l'aperçu par le lecteur (fichier ou intégration LinkedIn), puis envoie video_play.
 // Le lecteur n'est chargé qu'à ce moment-là : rien de la vidéo n'est téléchargé avant le clic.
 
-declare global {
-  interface Window {
-    umami?: { track: (event: string, data?: Record<string, string>) => void };
-  }
-}
-
 export function initVideoSlots(): void {
   document.querySelectorAll<HTMLElement>("[data-video]").forEach((slot) => {
     const poster = slot.querySelector<HTMLAnchorElement>("[data-video-play]");

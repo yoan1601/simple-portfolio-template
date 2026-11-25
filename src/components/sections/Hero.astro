@@ -17,7 +17,7 @@ const h = t.hero;
   <h1 id="t-hero" class="hero__title">{h.title}</h1>
   <p class="hero__lead">{h.lead}</p>
   <div class="hero__actions">
-    <CalendlyLink class="hero__cta" position="hero">{t.ui.bookCall}</CalendlyLink>
+    <CalendlyLink class="hero__cta" locale={locale} position="hero">{t.ui.bookCall}</CalendlyLink>
     <a class="hero__write" href={`#${t.ui.anchors.contact}`}>{h.writeLink}</a>
   </div>
   <p class="hero__note note">
