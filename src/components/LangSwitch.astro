@@ -87,12 +87,17 @@ const items = locales.map((l) => ({
     transition: color 0.2s ease;
   }
 
-  a.lang__item {
+  /* Langue inactive estompée par son drapeau seulement : le code garde un contraste de 6,4:1 (recette, Lighthouse) */
+  a.lang__item :global(.flag) {
     opacity: 0.75;
+    transition: opacity 0.2s ease;
   }
 
   a.lang__item:hover {
     color: var(--accent-hover);
+  }
+
+  a.lang__item:hover :global(.flag) {
     opacity: 1;
   }
 
@@ -132,7 +137,7 @@ const items = locales.map((l) => ({
       background: var(--accent);
     }
 
-    .lang--compact a.lang__item {
+    .lang--compact a.lang__item :global(.flag) {
       opacity: 0.6;
     }
   }
