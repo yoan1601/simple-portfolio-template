@@ -47,10 +47,15 @@ En local dans `.env` (non versionné), en ligne dans les variables du projet Ver
 
 ## Mesure (Umami)
 
-Événements suivis : `calendly_click` (position, langue), `form_submit` (succès réel seulement), `lang_switch`,
-`video_play`, `linkedin_click`. Le script ne compte que sur `harena.systems` et `www.harena.systems` : ni le local
-ni les aperçus Vercel. Pour exclure ses propres visites : `localStorage.setItem("umami.disabled", "1")` dans la
-console du navigateur, sur le site en ligne.
+Événements suivis : `calendly_click` (position, langue, source d'arrivée), `form_submit` (succès réel seulement),
+`lang_switch`, `video_play`, `linkedin_click`. Le script ne compte que sur `harena.systems` et `www.harena.systems` :
+ni le local ni les aperçus Vercel. Pour exclure ses propres visites : `localStorage.setItem("umami.disabled", "1")`
+dans la console du navigateur, sur le site en ligne.
+
+Attribution : les liens Calendly portent `utm_source=harena.systems`, `utm_campaign=landing-fr|en` et
+`utm_content` (position du bouton). Un visiteur arrivé avec ses propres UTM (par exemple
+`https://www.harena.systems/?utm_source=lahety&utm_medium=video`) les garde jusqu'à Calendly, même après un
+changement de langue (`src/scripts/utm.ts`, mémoire de session) ; `utm_content` reste la position du bouton.
 
 ## Déploiement
 

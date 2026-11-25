@@ -52,3 +52,9 @@ url.searchParams.set("utm_content", position);
     )
   }
 </a>
+
+{/* UTM d'arrivée (ex. utm_source=lahety) reportés sur ces liens : script inclus une seule fois par page */}
+<script>
+  import { initUtmPassThrough } from "../scripts/utm";
+  initUtmPassThrough();
+</script>
