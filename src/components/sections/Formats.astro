@@ -1,0 +1,89 @@
+---
+// 07. Autres façons de travailler ensemble : deux formats, puis les autres problèmes traités.
+import { getContent, type Locale } from "../../i18n";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const f = getContent(locale).formats;
+---
+
+<Section section="formats" margin={f.margin} labelledby="t-formats">
+  <h2 id="t-formats" class="title-section formats__title">{f.title}</h2>
+  <div class="formats__grid">
+    {
+      f.items.map((item) => (
+        <div class="formats__item">
+          <h3 class="formats__item-title">{item.title}</h3>
+          <p class="read">{item.text}</p>
+        </div>
+      ))
+    }
+  </div>
+  <p class="formats__others read"><strong>{f.othersLead}</strong> {f.othersText}</p>
+</Section>
+
+<style>
+  .formats__title {
+    max-width: 18ch;
+    margin-bottom: 28px;
+  }
+
+  .formats__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .formats__item {
+    padding-top: 18px;
+    border-top: 1px solid rgb(200 133 58 / 0.35);
+  }
+
+  .formats__item-title {
+    margin-bottom: 8px;
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  .formats__others {
+    max-width: 760px;
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-subtle);
+  }
+
+  .formats__others strong {
+    font-weight: 500;
+    color: var(--ink-title);
+  }
+
+  @media (min-width: 1024px) {
+    .formats__title {
+      margin-bottom: 48px;
+    }
+
+    .formats__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 40px;
+    }
+
+    .formats__item {
+      padding-top: 24px;
+    }
+
+    .formats__item-title {
+      margin-bottom: 12px;
+      font-size: 24px;
+    }
+
+    .formats__others {
+      margin-top: 48px;
+      padding-top: 24px;
+    }
+  }
+</style>

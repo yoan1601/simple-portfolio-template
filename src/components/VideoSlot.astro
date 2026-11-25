@@ -1,0 +1,189 @@
+---
+// Emplacement vidéo léger : un aperçu cliquable, et rien d'autre tant qu'on n'a pas cliqué.
+// Au clic, le lecteur (fichier ou intégration LinkedIn) remplace l'aperçu et l'événement Umami video_play part.
+// Jamais de lecture automatique au chargement. Sans JavaScript, l'aperçu est un simple lien vers la vidéo.
+// Rien n'est rendu si la vidéo n'est pas encore disponible (kind "none").
+import { Image } from "astro:assets";
+import type { Locale } from "../i18n";
+import { getContent } from "../i18n";
+import type { VideoSource } from "../lib/video";
+
+interface Props {
+  locale: Locale;
+  video: VideoSource;
+  id: string; // identifiant envoyé avec video_play
+}
+
+const { locale, video, id } = Astro.props;
+const t = getContent(locale);
+const v = t.proof.featured.video;
+const title = t.proof.featured.title;
+const href = video.kind === "file" ? video.src : video.kind === "linkedin" ? video.postUrl : "";
+---
+
+{
+  video.kind !== "none" && (
+    <div
+      class="video"
+      data-video
+      data-video-id={id}
+      data-video-kind={video.kind}
+      data-video-src={video.kind === "file" ? video.src : video.embedUrl}
+      data-video-type={video.kind === "file" ? video.type : undefined}
+      data-video-label={v.playerLabel}
+      data-locale={locale}
+    >
+      <a class="video__poster" href={href} target="_blank" rel="noopener" aria-label={v.playLabel} data-video-play>
+        {video.poster && <Image class="video__image" src={video.poster} alt="" widths={[480, 880]} sizes="(min-width: 1024px) 480px, 100vw" />}
+        <span class="video__tag">
+          <span class="video__tag-rule" aria-hidden="true" />
+          {v.tag}
+        </span>
+        <span class="video__button" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5.5v13l10.5-6.5z" fill="currentColor" />
+          </svg>
+        </span>
+        <span class="video__title">{title}</span>
+        <span class="video__hint">{v.hint}</span>
+      </a>
+    </div>
+  )
+}
+
+<script>
+  import { initVideoSlots } from "../scripts/video";
+  initVideoSlots();
+</script>
+
+<style>
+  .video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line-visible);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background-color: var(--bg-raised);
+    background-image:
+      linear-gradient(rgb(200 133 58 / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(200 133 58 / 0.06) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .video__poster {
+    position: absolute;
+    inset: 0;
+    display: block;
+    color: var(--ink-strong);
+    text-decoration: none;
+  }
+
+  .video__poster :global(.video__image) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+  }
+
+  .video__tag {
+    position: absolute;
+    top: 16px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .video__tag-rule {
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .video__button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: -32px 0 0 -32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 0 10px rgb(200 133 58 / 0.14);
+    transition:
+      background var(--duration) ease,
+      box-shadow var(--duration) ease;
+  }
+
+  .video__poster:hover .video__button {
+    background: var(--accent-hover);
+    box-shadow: 0 0 0 12px rgb(200 133 58 / 0.2);
+  }
+
+  /* Mobile : titre sur une ligne en bas, « Lecture au clic » en haut à droite : rien ne touche le bouton */
+  .video__title {
+    position: absolute;
+    right: 18px;
+    bottom: 12px;
+    left: 18px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 1.2;
+  }
+
+  .video__hint {
+    position: absolute;
+    top: 17px;
+    right: 18px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-secondary);
+  }
+
+  /* Lecteur inséré au clic */
+  .video :global(video),
+  .video :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  @media (min-width: 768px) {
+    .video__tag {
+      top: 20px;
+      left: 22px;
+    }
+
+    /* Comme la maquette : titre en bas à gauche, « Lecture au clic » en bas à droite */
+    .video__title {
+      right: auto;
+      bottom: 18px;
+      left: 22px;
+      max-width: 60%;
+      font-size: 18px;
+    }
+
+    .video__hint {
+      top: auto;
+      right: 22px;
+      bottom: 20px;
+      font-size: 11px;
+    }
+  }
+</style>

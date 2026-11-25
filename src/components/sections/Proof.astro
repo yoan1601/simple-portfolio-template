@@ -1,0 +1,210 @@
+---
+// 06. Preuves : l'assistant juridique (avec l'emplacement vidéo s'il y a une vidéo), puis trois preuves courtes.
+import { getContent, type Locale } from "../../i18n";
+import { legalAssistantVideo } from "../../lib/video";
+import Section from "../Section.astro";
+import VideoSlot from "../VideoSlot.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const p = t.proof;
+const hasVideo = legalAssistantVideo.kind !== "none";
+---
+
+<Section section="proof" id={t.ui.anchors.proof} margin={p.margin} labelledby="t-proof" band>
+  <h2 id="t-proof" class="title-section proof__title">{p.title}</h2>
+  <p class="proof__note note">
+    <span class="proof__note-rule" aria-hidden="true"></span>
+    {p.note}
+  </p>
+
+  <article class:list={["proof__featured", { "proof__featured--video": hasVideo }]}>
+    <div class="proof__featured-text">
+      <span class="proof__badge proof__badge--featured">{p.featured.status}</span>
+      <h3 class="proof__featured-title">{p.featured.title}</h3>
+      <p class="read read--lg">{p.featured.text}</p>
+    </div>
+    {
+      hasVideo && (
+        <div class="proof__featured-video">
+          <VideoSlot locale={locale} video={legalAssistantVideo} id="assistant-juridique" />
+        </div>
+      )
+    }
+  </article>
+
+  <div class="proof__items">
+    {
+      p.items.map((item) => (
+        <article class="proof__item">
+          {item.tagStyle === "badge" ? (
+            <span class="proof__badge">{item.tag}</span>
+          ) : (
+            <p class="proof__kicker">{item.tag}</p>
+          )}
+          <h3 class="proof__item-title">{item.title}</h3>
+          <p class="read">{item.text}</p>
+        </article>
+      ))
+    }
+  </div>
+</Section>
+
+<style>
+  .proof__title {
+    margin-bottom: 10px;
+  }
+
+  .proof__note {
+    margin-bottom: 36px;
+  }
+
+  .proof__note-rule {
+    display: none;
+  }
+
+  .proof__badge {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 4px 9px;
+    border: 1px solid var(--line-strong);
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .proof__badge--featured {
+    margin-bottom: 14px;
+  }
+
+  .proof__featured {
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .proof__featured-title {
+    margin-bottom: 12px;
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .proof__featured-video {
+    margin-top: 24px;
+  }
+
+  .proof__item {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .proof__item:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .proof__kicker {
+    margin-bottom: 10px;
+    font-size: 10px;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .proof__item-title {
+    margin-bottom: 8px;
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  @media (min-width: 1024px) {
+    .proof__title {
+      margin-bottom: 16px;
+    }
+
+    .proof__note {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 56px;
+    }
+
+    .proof__note-rule {
+      display: block;
+      flex: 0 0 24px;
+      height: 1px;
+      background: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .proof__badge {
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
+
+    .proof__badge--featured {
+      margin-bottom: 18px;
+      padding: 5px 10px;
+    }
+
+    .proof__featured {
+      padding-bottom: 56px;
+    }
+
+    .proof__featured--video {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px 48px;
+    }
+
+    .proof__featured-text {
+      flex: 1 1 300px;
+      min-width: 0;
+    }
+
+    .proof__featured--video .proof__featured-video {
+      flex: 1.25 1 380px;
+      min-width: 0;
+      margin: 0;
+    }
+
+    .proof__featured-title {
+      margin-bottom: 16px;
+      font-size: 32px;
+    }
+
+    .proof__featured:not(.proof__featured--video) .read {
+      max-width: 720px;
+    }
+
+    .proof__items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px;
+      padding-top: 48px;
+    }
+
+    .proof__item,
+    .proof__item:last-child {
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .proof__kicker {
+      margin-bottom: 14px;
+      font-size: 11px;
+    }
+
+    .proof__item-title {
+      margin-bottom: 12px;
+      font-size: 23px;
+    }
+  }
+</style>

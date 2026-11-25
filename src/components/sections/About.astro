@@ -1,0 +1,159 @@
+---
+// 10. Qui suis-je : photo (via <Image>, formats et tailles générés au build), texte, fiche Rôle / JCI.
+import { Image } from "astro:assets";
+import portrait from "../../assets/portrait-harena.jpg";
+import { getContent, type Locale } from "../../i18n";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const a = getContent(locale).about;
+---
+
+<Section section="about" margin={a.margin} labelledby="t-about" band>
+  <h2 id="t-about" class="title-section about__title">{a.title}</h2>
+  <div class="about__layout">
+    <figure class="about__figure">
+      <Image
+        class="about__photo"
+        src={portrait}
+        alt={a.photoAlt}
+        widths={[240, 360, 480, 640]}
+        sizes="(min-width: 1024px) 240px, (min-width: 768px) 360px, calc(100vw - 44px)"
+        loading="lazy"
+      />
+      <figcaption class="about__caption">
+        <span class="about__caption-rule" aria-hidden="true"></span>
+        {a.photoCaption}
+      </figcaption>
+    </figure>
+    <div class="about__text">
+      <p class="read read--lg about__bio">{a.text}</p>
+      <dl class="about__facts">
+        {
+          a.facts.map((fact) => (
+            <div class="about__fact">
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .about__title {
+    margin-bottom: 20px;
+  }
+
+  .about__figure {
+    max-width: 360px;
+    margin-bottom: 24px;
+  }
+
+  .about__figure :global(.about__photo) {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: 50% 15%;
+    border: 1px solid var(--line-visible);
+    border-radius: var(--radius);
+  }
+
+  .about__caption {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .about__caption-rule {
+    width: 16px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .about__bio {
+    margin-bottom: 28px;
+    line-height: 1.65;
+  }
+
+  .about__facts {
+    display: grid;
+    gap: 14px;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .about__fact {
+    padding-top: 10px;
+    border-top: 1px solid var(--line-visible);
+  }
+
+  .about__fact dt {
+    color: var(--ink-note);
+  }
+
+  .about__fact dd {
+    margin-top: 3px;
+    color: var(--ink-strong);
+  }
+
+  @media (min-width: 1024px) {
+    .about__title {
+      margin-bottom: 32px;
+    }
+
+    .about__layout {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 40px 56px;
+    }
+
+    .about__figure {
+      flex: 0 0 240px;
+      margin: 0;
+    }
+
+    .about__figure :global(.about__photo) {
+      aspect-ratio: 4 / 5;
+      object-position: 50% 50%;
+    }
+
+    .about__text {
+      flex: 1 1 400px;
+      min-width: 0;
+    }
+
+    .about__bio {
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .about__facts {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 18px 24px;
+      margin-top: 36px;
+    }
+
+    .about__fact {
+      padding-top: 12px;
+    }
+
+    .about__fact dd {
+      margin-top: 4px;
+    }
+  }
+</style>

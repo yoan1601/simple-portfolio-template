@@ -2,10 +2,15 @@
 // La page, dans l'ordre du cadrage. Les deux langues passent par ce même composant.
 import type { Locale } from "../i18n";
 import Page from "../layouts/Page.astro";
+import About from "./sections/About.astro";
+import Faq from "./sections/Faq.astro";
+import Formats from "./sections/Formats.astro";
 import Hero from "./sections/Hero.astro";
 import Method from "./sections/Method.astro";
 import Offer from "./sections/Offer.astro";
 import Problems from "./sections/Problems.astro";
+import Proof from "./sections/Proof.astro";
+import Refusals from "./sections/Refusals.astro";
 import Register from "./sections/Register.astro";
 
 interface Props {
@@ -21,4 +26,9 @@ const { locale } = Astro.props;
   <Offer locale={locale} />
   <Method locale={locale} />
   <Register locale={locale} />
+  <Proof locale={locale} />
+  <Formats locale={locale} />
+  <Refusals locale={locale} />
+  <Faq locale={locale} />
+  <About locale={locale} />
 </Page>

@@ -1,0 +1,80 @@
+---
+// 08. Ce que je refuse de faire : trois lignes barrées d'une croix ambre.
+import { getContent, type Locale } from "../../i18n";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const r = getContent(locale).refusals;
+---
+
+<Section section="refusals" margin={r.margin} labelledby="t-refusals" band>
+  <h2 id="t-refusals" class="title-section refusals__title">{r.title}</h2>
+  <ul class="refusals__list">
+    {
+      r.items.map((item) => (
+        <li class="refusals__item">
+          <svg
+            class="refusals__icon"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M6 6l12 12" />
+            <path d="M18 6L6 18" />
+          </svg>
+          <p>{item}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  .refusals__title {
+    margin-bottom: 24px;
+  }
+
+  .refusals__list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--line-visible);
+  }
+
+  .refusals__item {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line-subtle);
+    font-family: var(--font-display);
+    font-size: 23px;
+    line-height: 1.25;
+  }
+
+  .refusals__icon {
+    flex: 0 0 18px;
+    color: var(--accent);
+    transform: translateY(2px);
+  }
+
+  @media (min-width: 1024px) {
+    .refusals__title {
+      margin-bottom: 40px;
+    }
+
+    .refusals__item {
+      gap: 28px;
+      padding: 26px 0;
+      font-size: 30px;
+    }
+  }
+</style>
