@@ -1,0 +1,87 @@
+---
+// 02. Constats : cinq lignes numérotées, constat en serif, explication en texte de lecture.
+import { getContent, type Locale } from "../../i18n";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const p = getContent(locale).problems;
+---
+
+<Section section="problems" margin={p.margin} labelledby="t-problems" band>
+  <h2 id="t-problems" class="title-section problems__title">{p.title}</h2>
+  <ol class="problems__list">
+    {
+      p.items.map((item, i) => (
+        <li class="problems__item">
+          <span class="problems__number" aria-hidden="true">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <p class="problems__statement">{item.title}</p>
+          <p class="problems__text read read--lg">{item.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</Section>
+
+<style>
+  .problems__title {
+    max-width: 18ch;
+    margin-bottom: 32px;
+  }
+
+  .problems__list {
+    list-style: none;
+    padding: 0;
+    border-top: 1px solid var(--line-visible);
+  }
+
+  .problems__item {
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .problems__number {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .problems__statement {
+    margin-bottom: 8px;
+    font-family: var(--font-display);
+    font-size: 21px;
+    line-height: 1.3;
+  }
+
+  @media (min-width: 1024px) {
+    .problems__title {
+      margin-bottom: 48px;
+    }
+
+    .problems__item {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1.1fr);
+      column-gap: 32px;
+      padding: 28px 0;
+    }
+
+    .problems__number {
+      margin: 0;
+      padding-top: 6px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .problems__statement {
+      margin: 0;
+      font-size: 24px;
+    }
+  }
+</style>

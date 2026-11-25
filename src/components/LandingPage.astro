@@ -1,0 +1,24 @@
+---
+// La page, dans l'ordre du cadrage. Les deux langues passent par ce même composant.
+import type { Locale } from "../i18n";
+import Page from "../layouts/Page.astro";
+import Hero from "./sections/Hero.astro";
+import Method from "./sections/Method.astro";
+import Offer from "./sections/Offer.astro";
+import Problems from "./sections/Problems.astro";
+import Register from "./sections/Register.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<Page locale={locale}>
+  <Hero locale={locale} />
+  <Problems locale={locale} />
+  <Offer locale={locale} />
+  <Method locale={locale} />
+  <Register locale={locale} />
+</Page>

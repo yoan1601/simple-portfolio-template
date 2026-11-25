@@ -1,0 +1,140 @@
+---
+// Coquille commune des 11 sections : numéro et annotation de marge (« carnet de terrain »), filet vertical.
+// Mobile : annotation en ligne au-dessus du contenu (« 02 — Constats »).
+// À partir de 1024 px : colonne de marge de 180 px, contenu à droite d'un filet ambre.
+import { sectionNumber, type SectionKey } from "../lib/sections";
+
+interface Props {
+  section: SectionKey;
+  margin: string[];
+  marginMobile?: string;
+  id?: string;
+  labelledby?: string;
+  band?: boolean; // fond #0F0F0C et filets haut et bas
+  large?: boolean; // rythme vertical plus ample (offre, registre)
+  class?: string;
+}
+
+const { section, margin, marginMobile, id, labelledby, band = false, large = false, class: className } = Astro.props;
+const mobileText = marginMobile ?? margin.join(" · ");
+---
+
+<section
+  id={id}
+  aria-labelledby={labelledby}
+  class:list={["section", { "section--band": band, "section--large": large }, className]}
+>
+  <div class="section__inner">
+    <p class="section__margin">
+      <span class="section__number">{sectionNumber(section)}</span>
+      <span class="section__rule" aria-hidden="true"></span>
+      <span class="section__label section__label--mobile">{mobileText}</span>
+      <span class="section__label section__label--desktop">
+        {margin.map((line) => <span>{line}</span>)}
+      </span>
+    </p>
+    <div class="section__body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .section {
+    padding: var(--section-space) 0;
+  }
+
+  .section--large {
+    padding: calc(var(--section-space) + 8px) 0;
+  }
+
+  .section--band {
+    background: var(--bg-band);
+    border-top: 1px solid var(--line-subtle);
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .section__inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+  }
+
+  .section__margin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .section__number {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .section__rule {
+    flex: 0 0 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .section__label--desktop {
+    display: none;
+  }
+
+  .section__body {
+    min-width: 0;
+  }
+
+  /* Le hero aligne sa marge sur la première ligne du grand titre */
+  .section--hero .section__margin {
+    margin-bottom: 28px;
+  }
+
+  @media (min-width: 1024px) {
+    .section--large {
+      padding: calc(var(--section-space) + 16px) 0;
+    }
+
+    .section__inner {
+      display: flex;
+      column-gap: 48px;
+    }
+
+    .section__margin {
+      flex: 0 0 var(--margin-col);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 0;
+      padding-top: 14px;
+    }
+
+    .section--hero .section__margin {
+      margin: 0;
+      padding-top: 22px;
+    }
+
+    .section__rule,
+    .section__label--mobile {
+      display: none;
+    }
+
+    .section__label--desktop {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .section__body {
+      flex: 1 1 auto;
+      padding-left: 56px;
+      border-left: 1px solid var(--line);
+    }
+  }
+</style>

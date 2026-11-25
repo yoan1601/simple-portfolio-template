@@ -32,7 +32,7 @@ const ogImage = new URL(`/og/og-${locale}.png`, Astro.site).href;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#0A0A08" />
 
-    <!-- Open Graph et carte de partage, par langue -->
+    {/* Open Graph et carte de partage, par langue */}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={t.ui.siteName} />
     <meta property="og:title" content={t.meta.title} />
@@ -46,13 +46,13 @@ const ogImage = new URL(`/og/og-${locale}.png`, Astro.site).href;
     <meta property="og:image:alt" content={t.meta.ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Polices auto-hébergées ; seul le titre du hero (DM Serif droit) est préchargé -->
+    {/* Polices auto-hébergées ; seul le titre du hero (DM Serif droit) est préchargé */}
     <Font cssVariable="--font-display" preload={[{ weight: 400, style: "normal" }]} />
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
 
-    <!-- Umami : ne compte que sur les domaines de production (aperçus et local ignorés).
-         Visites de Harena exclues par localStorage.setItem("umami.disabled", "1") dans son navigateur. -->
+    {/* Umami : ne compte que sur les domaines de production (aperçus et local ignorés).
+        Visites de Harena exclues par localStorage.setItem("umami.disabled", "1") dans son navigateur. */}
     <script
       is:inline
       defer

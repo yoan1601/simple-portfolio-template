@@ -1,0 +1,353 @@
+---
+// 03. L'offre : trois piliers, cinq inclusions, encadré de la garantie (conditions en liste numérotée, proposition 6).
+import { getContent, type Locale } from "../../i18n";
+import CalendlyLink from "../CalendlyLink.astro";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const o = t.offer;
+const g = o.guarantee;
+---
+
+<Section
+  section="offer"
+  id={t.ui.anchors.offer}
+  margin={o.margin}
+  marginMobile={o.marginMobile}
+  labelledby="t-offer"
+  large
+>
+  <span class="offer__badge">{o.badge}</span>
+  <h2 id="t-offer" class="offer__title">{o.title}</h2>
+  <p class="offer__subtitle">{o.subtitle}</p>
+
+  <div class="offer__pillars">
+    {
+      o.pillars.map((pillar) => (
+        <div class="offer__pillar">
+          <h3 class="offer__pillar-title">{pillar.title}</h3>
+          <p class="read">{pillar.text}</p>
+        </div>
+      ))
+    }
+  </div>
+
+  <h3 class="offer__included-title">
+    {o.includedTitle}<span class="offer__included-rule" aria-hidden="true"></span>
+  </h3>
+  <ul class="offer__included">
+    {
+      o.included.map((item) => (
+        <li class="offer__included-item">
+          <span class="offer__plus" aria-hidden="true">
+            +
+          </span>
+          <p class="offer__included-name">{item.title}</p>
+          <p class="offer__included-text read">{item.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="guarantee">
+    <span class="guarantee__badge">{g.badge}</span>
+    <h3 class="guarantee__title">{g.title}</h3>
+    <p class="guarantee__text read read--lg">{g.text}</p>
+    <p class="guarantee__label" id="guarantee-conditions">{g.conditionsLabel}</p>
+    <ol class="guarantee__conditions" aria-labelledby="guarantee-conditions">
+      {g.conditions.map((condition) => <li class="read">{condition}</li>)}
+    </ol>
+    <div class="guarantee__close">
+      <p class="guarantee__closing">{g.closing}</p>
+      <CalendlyLink class="guarantee__cta" position="offer">{t.ui.bookCall}</CalendlyLink>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .offer__badge {
+    display: none;
+  }
+
+  .offer__title {
+    margin-bottom: 16px;
+    font-size: 40px;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+  }
+
+  .offer__subtitle {
+    margin-bottom: 40px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 21px;
+    line-height: 1.35;
+    color: var(--ink-read);
+  }
+
+  .offer__pillars {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .offer__pillar {
+    padding-top: 18px;
+    border-top: 1px solid var(--line-offer);
+  }
+
+  .offer__pillar-title {
+    margin-bottom: 8px;
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  .offer__included-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 56px 0 4px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .offer__included-rule {
+    flex: 1 1 auto;
+    height: 1px;
+    background: var(--line-visible);
+  }
+
+  .offer__included {
+    list-style: none;
+    padding: 0;
+  }
+
+  .offer__included-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .offer__plus {
+    grid-row: span 2;
+    color: var(--accent);
+  }
+
+  .offer__included-name {
+    margin-bottom: 4px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.3;
+  }
+
+  /* Encadré de la garantie */
+  .guarantee {
+    position: relative;
+    margin-top: 64px;
+    padding: 36px 22px 28px;
+    border: 1px solid rgb(200 133 58 / 0.4);
+  }
+
+  .guarantee__badge {
+    position: absolute;
+    top: -10px;
+    left: 18px;
+    padding: 0 10px;
+    background: var(--bg);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 20px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .guarantee__title {
+    margin-bottom: 16px;
+    font-size: 27px;
+    line-height: 1.15;
+  }
+
+  .guarantee__text {
+    margin-bottom: 24px;
+  }
+
+  .guarantee__label {
+    margin-bottom: 10px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .guarantee__conditions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding-left: 1.6em;
+  }
+
+  .guarantee__conditions li {
+    padding-left: 4px;
+    line-height: 1.55;
+  }
+
+  .guarantee__conditions li::marker {
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+
+  .guarantee__closing {
+    margin-bottom: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.35;
+  }
+
+  .guarantee__close :global(.guarantee__cta) {
+    display: flex;
+    width: 100%;
+    min-height: 54px;
+  }
+
+  @media (min-width: 768px) {
+    .guarantee {
+      padding: 48px 40px 40px;
+    }
+
+    .guarantee__conditions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px 40px;
+      margin-bottom: 40px;
+    }
+
+    .guarantee__close {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: 32px;
+      border-top: 1px solid var(--line);
+    }
+
+    .guarantee__closing {
+      max-width: 420px; /* phrase et bouton sur une ligne dans l'encadré à 1440 px */
+      margin: 0;
+      padding: 0;
+      border: 0;
+      font-size: 22px;
+    }
+
+    .guarantee__close :global(.guarantee__cta) {
+      display: inline-flex;
+      width: auto;
+      padding: 0 28px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .offer__badge {
+      display: inline-block;
+      margin-bottom: 24px;
+      padding: 6px 12px;
+      border: 1px solid rgb(200 133 58 / 0.35);
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.4;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .offer__title {
+      max-width: 15ch;
+      margin-bottom: 20px;
+      font-size: 60px;
+      line-height: 1.05;
+      letter-spacing: -0.015em;
+    }
+
+    .offer__subtitle {
+      max-width: 620px;
+      margin-bottom: 64px;
+      font-size: 26px;
+    }
+
+    .offer__pillars {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 40px;
+    }
+
+    .offer__pillar {
+      padding-top: 24px;
+    }
+
+    .offer__pillar-title {
+      margin-bottom: 12px;
+      font-size: 23px;
+    }
+
+    .offer__included-title {
+      gap: 16px;
+      margin: 88px 0 8px;
+    }
+
+    .offer__included-item {
+      grid-template-columns: 24px minmax(180px, 260px) minmax(0, 1fr);
+      column-gap: 24px;
+      padding: 22px 0;
+    }
+
+    .offer__plus {
+      grid-row: auto;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .offer__included-name {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .guarantee {
+      margin-top: 96px;
+      padding: 56px 56px 48px;
+    }
+
+    .guarantee__badge {
+      left: 40px;
+      padding: 0 12px;
+    }
+
+    .guarantee__title {
+      margin-bottom: 24px;
+      font-size: 36px;
+    }
+
+    .guarantee__text {
+      max-width: 680px;
+      margin-bottom: 32px;
+    }
+
+    .guarantee__label {
+      margin-bottom: 12px;
+    }
+  }
+</style>

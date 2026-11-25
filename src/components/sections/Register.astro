@@ -1,0 +1,248 @@
+---
+// 05. Avant, après, traité comme un registre. Un seul tableau : colonnes à partir de 1024 px,
+// fiches « Avant / Après » en dessous. Rôles ARIA explicites pour garder la sémantique de tableau
+// quand le CSS change l'affichage.
+import { getContent, type Locale } from "../../i18n";
+import Section from "../Section.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = getContent(locale);
+const r = t.register;
+---
+
+<Section section="register" margin={r.margin} labelledby="t-register" large>
+  <h2 id="t-register" class="title-section register__title">{r.title}</h2>
+  <table class="register" role="table" aria-labelledby="t-register">
+    <thead role="rowgroup">
+      <tr role="row">
+        <th role="columnheader" scope="col" class="register__head register__head--number">{r.columns.number}</th>
+        <th role="columnheader" scope="col" class="register__head register__head--before">{r.columns.before}</th>
+        <th role="columnheader" scope="col" class="register__head register__head--after">{r.columns.after}</th>
+      </tr>
+    </thead>
+    <tbody role="rowgroup">
+      {
+        r.rows.map((row, i) => (
+          <tr role="row">
+            <td role="cell" class="register__number">
+              {String(i + 1).padStart(2, "0")}
+            </td>
+            <td role="cell" class="register__before read" data-label={r.columns.before}>
+              {row.before}
+            </td>
+            <td role="cell" class="register__after" data-label={r.columns.after}>
+              {row.after}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="register__signature signature">
+    <span class="register__signature-rule" aria-hidden="true"></span>
+    {t.ui.signature}
+  </p>
+</Section>
+
+<style>
+  .register__title {
+    margin-bottom: 28px;
+  }
+
+  /* Mobile : fiches */
+  .register,
+  .register tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .register {
+    border-collapse: collapse;
+    border-top: 1px solid var(--line-strong);
+    text-align: left;
+  }
+
+  /* En-têtes gardés pour les lecteurs d'écran, remplacés à l'écran par les étiquettes de chaque fiche */
+  .register thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .register tbody tr {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: 12px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--line-subtle);
+  }
+
+  .register td {
+    display: block;
+  }
+
+  /* Remise à zéro sans spécificité, pour laisser les classes de cellule régler leurs marges */
+  :where(.register td, .register th) {
+    padding: 0;
+  }
+
+  .register td.register__number {
+    grid-row: span 2;
+    padding-top: 3px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  .register__before,
+  .register__after {
+    grid-column: 2;
+  }
+
+  .register__before::before,
+  .register__after::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-note);
+  }
+
+  .register__after::before {
+    color: var(--accent);
+  }
+
+  .register__before {
+    margin-bottom: 12px;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-secondary);
+  }
+
+  .register__after {
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.35;
+  }
+
+  .register__signature {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+    font-size: 22px;
+  }
+
+  .register__signature-rule {
+    flex: 0 0 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* À partir de 1024 px : vrai tableau à trois colonnes */
+  @media (min-width: 1024px) {
+    .register__title {
+      margin-bottom: 48px;
+    }
+
+    .register {
+      display: table;
+      border-top: 0;
+    }
+
+    .register tbody {
+      display: table-row-group;
+    }
+
+    .register thead {
+      position: static;
+      display: table-header-group;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+    }
+
+    .register tbody tr {
+      display: table-row;
+      padding: 0;
+    }
+
+    .register td {
+      display: table-cell;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line-subtle);
+    }
+
+    .register__head {
+      padding: 0 0 14px;
+      border-bottom: 1px solid var(--line-strong);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-note);
+    }
+
+    .register__head--number {
+      width: 56px;
+    }
+
+    .register__head--before {
+      width: 44%;
+      padding-right: 32px;
+    }
+
+    .register__head--after {
+      padding-left: 32px;
+      border-left: 1px solid var(--line);
+      color: var(--accent);
+    }
+
+    .register td.register__number {
+      padding: 26px 0;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .register__before::before,
+    .register__after::before {
+      content: none;
+    }
+
+    .register__before {
+      margin: 0;
+      padding: 24px 32px 24px 0;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .register__after {
+      padding: 22px 0 22px 32px;
+      border-left: 1px solid var(--line);
+      font-size: 21px;
+    }
+
+    .register__signature {
+      gap: 16px;
+      margin-top: 40px;
+      font-size: 26px;
+    }
+
+    .register__signature-rule {
+      flex-basis: 48px;
+    }
+  }
+</style>

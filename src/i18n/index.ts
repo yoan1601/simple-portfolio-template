@@ -10,13 +10,15 @@ export const links = {
   linkedin: "https://www.linkedin.com/in/harena-yoan/",
 } as const;
 
-// Typographie française : espace insécable avant « : ; ! ? » », après « « », et dans les milliers (3 000).
+// Typographie française : espace insécable avant « : ; ! ? » », après « « », dans les milliers (3 000)
+// et entre un nombre et le mot qui suit (48 heures, 8 semaines).
 // Appliquée au rendu pour que fr.ts reste identique au texte validé.
 function frenchSpacing(text: string): string {
   return text
     .replace(/ ([:;!?»])/g, " $1")
-    .replace(/« /g, "« ")
-    .replace(/(\d) (?=\d{3}\b)/g, "$1 ");
+    .replaceAll("« ", "« ")
+    .replace(/(\d) (?=\d{3}\b)/g, "$1 ")
+    .replace(/(\d) (?=\p{L})/gu, "$1 ");
 }
 
 function mapStrings<T>(value: T, fn: (text: string) => string): T {

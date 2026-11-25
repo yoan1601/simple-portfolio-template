@@ -159,6 +159,45 @@ a:hover {
   outline-offset: 3px;
 }
 
+/* Typographie commune des sections */
+.title-section {
+  font-size: 33px;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+/* Texte de lecture : Plex Sans, jamais en ambre */
+.read {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: 0;
+  color: var(--ink-read);
+}
+
+.note {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-note);
+}
+
+.signature {
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--accent);
+}
+
+@media (min-width: 1024px) {
+  .title-section {
+    font-size: 46px;
+  }
+
+  .read--lg {
+    font-size: 17px;
+    line-height: 1.65;
+  }
+}
+
 /* Boutons. Plein ambre : Calendly seulement. Contour : formulaire (étape 7). */
 .btn {
   display: inline-flex;
