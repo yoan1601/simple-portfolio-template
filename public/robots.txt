@@ -1,0 +1,4 @@
+# harena.systems : tout le site est public.
+# Les aperçus Vercel ne sont pas indexés (en-tête X-Robots-Tag: noindex posé par Vercel).
+User-agent: *
+Allow: /
